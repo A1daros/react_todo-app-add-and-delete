@@ -1,27 +1,40 @@
-import React from 'react';
-import { Todo } from '../types/Todo';
+import React, { useEffect, useState } from 'react';
 
-type Props = {
-  todos: Todo[];
-};
+type Props = { onAdd: (title: string) => Promise<void> };
 
-export const Header: React.FC<Props> = ({ todos }) => {
-  const allCompleted = todos.length > 0 && todos.every(todo => todo.completed);
+export const Header: React.FC<Props> = ({ onAdd }) => {
+  const [title, setTitle] = useState('');
+  const [disabled, setDisabled] = useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [disabled]); // Фокус після розблокування
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!title.trim()) {
+      return;
+    }
+
+    setDisabled(true);
+    try {
+      await onAdd(title);
+      setTitle('');
+    } catch {
+    } finally {
+      setDisabled(false);
+    }
   };
 
   return (
     <header className="todoapp__header">
-      <button
-        type="button"
-        className={`todoapp__toggle-all ${allCompleted ? 'active' : ''}`}
-        data-cy="ToggleAllButton"
-      />
-
       <form onSubmit={handleSubmit}>
         <input
+          ref={inputRef}
+          disabled={disabled}
+          value={title}
+          onChange={e => setTitle(e.target.value)}
           data-cy="NewTodoField"
           type="text"
           className="todoapp__new-todo"
