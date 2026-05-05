@@ -16,6 +16,27 @@ export const Footer: React.FC<Props> = ({
   onFilterChange,
   onClearCompleted,
 }) => {
+  const FILTERS = [
+    {
+      id: 'all' as FilterStatus,
+      title: 'All',
+      url: '#/',
+      cy: 'FilterLinkAll',
+    },
+    {
+      id: 'active' as FilterStatus,
+      title: 'Active',
+      url: '#/active',
+      cy: 'FilterLinkActive',
+    },
+    {
+      id: 'completed' as FilterStatus,
+      title: 'Completed',
+      url: '#/completed',
+      cy: 'FilterLinkCompleted',
+    },
+  ];
+
   if (todos.length === 0) {
     return null;
   }
@@ -35,37 +56,20 @@ export const Footer: React.FC<Props> = ({
         {`${activeTodos} items left`}
       </span>
 
-      {/* Active link should have the 'selected' class */}
       <nav className="filter" data-cy="Filter">
-        <a
-          href="#/"
-          className={`filter__link ${filter === 'all' ? 'selected' : ''} `}
-          data-cy="FilterLinkAll"
-          onClick={handleFilterClick('all')}
-        >
-          All
-        </a>
-
-        <a
-          href="#/active"
-          className={`filter__link ${filter === 'active' ? 'selected' : ''}`}
-          data-cy="FilterLinkActive"
-          onClick={handleFilterClick('active')}
-        >
-          Active
-        </a>
-
-        <a
-          href="#/completed"
-          className={`filter__link ${filter === 'completed' ? 'selected' : ''}`}
-          data-cy="FilterLinkCompleted"
-          onClick={handleFilterClick('completed')}
-        >
-          Completed
-        </a>
+        {FILTERS.map(({ id, title, url, cy }) => (
+          <a
+            key={id}
+            href={url}
+            className={`filter__link ${filter === id ? 'selected' : ''}`}
+            data-cy={cy}
+            onClick={handleFilterClick(id)}
+          >
+            {title}
+          </a>
+        ))}
       </nav>
 
-      {/* this button should be disabled if there are no completed todos */}
       <button
         type="button"
         className="todoapp__clear-completed"
@@ -78,7 +82,3 @@ export const Footer: React.FC<Props> = ({
     </footer>
   );
 };
-
-{
-  /* Hide the footer if there are no todos */
-}

@@ -67,8 +67,12 @@ export const App: React.FC = () => {
     }
   };
 
-  const clearCompleted = () => {
-    todos.filter(todo => todo.completed).forEach(todo => removeTodo(todo.id));
+  const clearCompleted = async () => {
+    const completedTodos = todos.filter(todo => todo.completed);
+
+    try {
+      await Promise.all(completedTodos.map(todo => removeTodo(todo.id)));
+    } catch {}
   };
 
   useEffect(() => {

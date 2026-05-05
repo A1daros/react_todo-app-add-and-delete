@@ -31,7 +31,6 @@ export const TodoItem: React.FC<Props> = ({
         {todo.title}
       </span>
 
-      {/* Показуємо кнопку видалення тільки якщо це не tempTodo */}
       {!isLoading && (
         <button
           type="button"
@@ -43,7 +42,6 @@ export const TodoItem: React.FC<Props> = ({
         </button>
       )}
 
-      {/* Лоадер активний, якщо ми або видаляємо, або це tempTodo */}
       <div
         data-cy="TodoLoader"
         className={`modal overlay ${isDeleting || isLoading ? 'is-active' : ''}`}
