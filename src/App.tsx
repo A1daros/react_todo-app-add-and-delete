@@ -1,15 +1,19 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState } from 'react';
+
 import { UserWarning } from './UserWarning';
-import { USER_ID } from './api/todos';
 import { TodoList } from './components/TodoList';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { ErrorNotification } from './components/ErrorNotificaton';
+
 import { FilterStatus } from './types/types';
+import { USER_ID } from './api/todos';
+
 import { useErrorMessage } from './hooks/useErrorMessage';
 import { useTodos } from './hooks/useTodos';
+import { getVisibleTodos } from './utils/todoUtils';
 
 export const App: React.FC = () => {
   const [filter, setFilter] = useState<FilterStatus>(FilterStatus.All);
@@ -18,17 +22,7 @@ export const App: React.FC = () => {
   const { todos, tempTodo, deletingId, addTodo, removeTodo, clearCompleted } =
     useTodos(setError);
 
-  const visibleTodos = todos.filter(todo => {
-    if (filter === FilterStatus.Active) {
-      return !todo.completed;
-    }
-
-    if (filter === FilterStatus.Completed) {
-      return todo.completed;
-    }
-
-    return true;
-  });
+  const visibleTodos = getVisibleTodos(todos, filter);
 
   if (!USER_ID) {
     return <UserWarning />;
