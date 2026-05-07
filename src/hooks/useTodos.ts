@@ -35,6 +35,7 @@ export const useTodos = (onError: (message: string) => void) => {
       setTodos(prev => [...prev, newTodo]);
     } catch {
       onError('Unable to add a todo');
+      throw new Error();
     } finally {
       setTempTodo(null);
     }
