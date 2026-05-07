@@ -15,7 +15,7 @@ export const Header: React.FC<Props> = ({ onAdd, onError, loading }) => {
     if (!loading) {
       inputRef.current?.focus();
     }
-  }, [loading]); // Фокус після розблокування
+  }, [loading]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -28,16 +28,15 @@ export const Header: React.FC<Props> = ({ onAdd, onError, loading }) => {
     }
 
     setDisabled(true);
-
     onError('');
 
     try {
       await onAdd(trimmedTitle);
       setTitle('');
     } catch {
-      onError('Unable to add a todo');
     } finally {
       setDisabled(false);
+      setTimeout(() => inputRef.current?.focus(), 0);
     }
   };
 

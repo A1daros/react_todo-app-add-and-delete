@@ -7,22 +7,23 @@ import { Todo } from './types/Todo';
 import { client } from './utils/fetchClient';
 import { TodoList } from './components/TodoList';
 import { Header } from './components/Header';
-import { FilterStatus, Footer } from './components/Footer';
+import { Footer } from './components/Footer';
 import { ErrorNotification } from './components/ErrorNotificaton';
+import { FilterStatus } from './types/types';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
-  const [filter, setFilter] = useState<FilterStatus>('all');
+  const [filter, setFilter] = useState<FilterStatus>(FilterStatus.All);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<number[]>([]);
 
   const visibleTodos = todos.filter(todo => {
-    if (filter === 'active') {
+    if (filter === FilterStatus.Active) {
       return !todo.completed;
     }
 
-    if (filter === 'completed') {
+    if (filter === FilterStatus.Completed) {
       return todo.completed;
     }
 
@@ -49,7 +50,7 @@ export const App: React.FC = () => {
       setTodos(prev => [...prev, newTodo]);
     } catch {
       setError('Unable to add a todo');
-      throw new Error(); // Щоб Header знав, що чистити поле не треба
+      throw new Error();
     } finally {
       setTempTodo(null);
     }
@@ -57,6 +58,8 @@ export const App: React.FC = () => {
 
   const removeTodo = async (todoId: number) => {
     setDeletingId(prev => [...prev, todoId]);
+    setError(null);
+
     try {
       await deleteTodo(todoId);
       setTodos(prev => prev.filter(todo => todo.id !== todoId));
@@ -70,9 +73,7 @@ export const App: React.FC = () => {
   const clearCompleted = async () => {
     const completedTodos = todos.filter(todo => todo.completed);
 
-    try {
-      await Promise.all(completedTodos.map(todo => removeTodo(todo.id)));
-    } catch {}
+    await Promise.all(completedTodos.map(todo => removeTodo(todo.id)));
   };
 
   useEffect(() => {
@@ -93,6 +94,8 @@ export const App: React.FC = () => {
   if (!USER_ID) {
     return <UserWarning />;
   }
+
+  // console.log(visibleTodos.length);
 
   return (
     <div className="todoapp">

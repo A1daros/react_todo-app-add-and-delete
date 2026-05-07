@@ -1,7 +1,7 @@
 import React from 'react';
 import { Todo } from '../types/Todo';
-
-export type FilterStatus = 'all' | 'active' | 'completed';
+import cn from 'classnames';
+import { FilterStatus } from '../types/types';
 
 type Props = {
   todos: Todo[];
@@ -61,7 +61,7 @@ export const Footer: React.FC<Props> = ({
           <a
             key={id}
             href={url}
-            className={`filter__link ${filter === id ? 'selected' : ''}`}
+            className={cn('filter__link', { selected: filter === id })}
             data-cy={cy}
             onClick={handleFilterClick(id)}
           >
