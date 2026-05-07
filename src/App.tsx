@@ -19,10 +19,25 @@ export const App: React.FC = () => {
   const [filter, setFilter] = useState<FilterStatus>(FilterStatus.All);
   const [error, setError] = useErrorMessage();
 
-  const { todos, tempTodo, deletingId, addTodo, removeTodo, clearCompleted } =
-    useTodos(setError);
+  const {
+    todos,
+    tempTodo,
+    deletingId,
+    addTodo,
+    removeTodo,
+    clearCompleted,
+    setTodos,
+  } = useTodos(setError);
 
   const visibleTodos = getVisibleTodos(todos, filter);
+
+  const toggleTodoLocal = (id: number) => {
+    setTodos(prev =>
+      prev.map(todo =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
+    );
+  };
 
   if (!USER_ID) {
     return <UserWarning />;
@@ -42,6 +57,7 @@ export const App: React.FC = () => {
         {(todos.length > 0 || tempTodo) && (
           <TodoList
             todos={visibleTodos}
+            onToggle={toggleTodoLocal}
             tempTodo={tempTodo}
             deletingId={deletingId}
             onDelete={removeTodo}

@@ -7,6 +7,7 @@ type Props = {
   isDeleting?: boolean;
   isLoading?: boolean;
   onDelete?: (id: number) => void;
+  onToggle?: (id: number) => void;
 };
 
 export const TodoItem: React.FC<Props> = ({
@@ -14,6 +15,7 @@ export const TodoItem: React.FC<Props> = ({
   isDeleting = false,
   isLoading = false,
   onDelete,
+  onToggle,
 }) => {
   return (
     <div data-cy="Todo" className={cn('todo', { completed: todo.completed })}>
@@ -24,7 +26,7 @@ export const TodoItem: React.FC<Props> = ({
           className="todo__status"
           aria-label="Toggle todo status"
           checked={todo.completed}
-          readOnly
+          onChange={() => onToggle?.(todo.id)}
         />
       </label>
 
